@@ -33,13 +33,8 @@ export default ((opts?: Options) => {
         const localDate = new Date(fileDate.getTime() - offset)
         const dateStr = localDate.toISOString().split('T')[0]
         
-        if (!dataset[dateStr]) {
-            dataset[dateStr] = []
-        }
-        dataset[dateStr].push({
-            title: file.frontmatter.title,
-            slug: file.slug,
-        })
+        if (!dataset[dateStr]) dataset[dateStr] = []
+        dataset[dateStr].push({ title: file.frontmatter.title, slug: file.slug })
       }
     })
 
@@ -62,13 +57,10 @@ export default ((opts?: Options) => {
       if (!isFuture && count > 3) level = 3
       if (!isFuture && count > 5) level = 4
 
-      // 툴팁 내용
       const tooltipContent = count > 0 ? (
         <ul class="tooltip-list">
           {dailyActivities.map((activity) => (
-            <li>
-              <a href={`/${activity.slug}`} class="internal">{activity.title}</a>
-            </li>
+            <li><a href={`/${activity.slug}`} class="internal">{activity.title}</a></li>
           ))}
         </ul>
       ) : (
@@ -77,11 +69,12 @@ export default ((opts?: Options) => {
 
       squares.push(
         <div class={`heatmap-square level-${level} ${isFuture ? "future" : ""}`}>
-          <div class="tooltip-container">
-            <div class="tooltip-header">{dateStr} ({count}건)</div>
-            <div class="tooltip-body">
-              {tooltipContent}
-            </div>
+          {/* 유령 래퍼 */}
+          <div class="sq-content-wrapper">
+             <div class="tooltip-card">
+               <div class="tooltip-header">{dateStr} ({count}건)</div>
+               <div class="tooltip-body">{tooltipContent}</div>
+             </div>
           </div>
         </div>
       )
@@ -91,13 +84,9 @@ export default ((opts?: Options) => {
 
     return (
       <div class={`activity-heatmap-container ${displayClass ?? ""}`}>
-        <div class="heatmap-title">
-          <span>{title}</span>
-        </div>
+        <div class="heatmap-title"><span>{title}</span></div>
         <div class="heatmap-content">
-          <div class="heatmap-grid">
-            {squares}
-          </div>
+          <div class="heatmap-grid">{squares}</div>
         </div>
       </div>
     )
@@ -113,7 +102,6 @@ export default ((opts?: Options) => {
     background-color: var(--lightgray);
     border-radius: 8px;
     gap: 15px;
-    position: relative; /* 툴팁 위치 기준점 보호 */
   }
 
   .heatmap-title {
@@ -137,8 +125,7 @@ export default ((opts?: Options) => {
 
   .heatmap-content {
     flex-grow: 1;
-    overflow-x: auto;
-    overflow-y: visible; /* 툴팁이 잘리지 않도록 설정 */
+    overflow: visible !important;
   }
   
   .heatmap-grid {
@@ -146,18 +133,23 @@ export default ((opts?: Options) => {
     grid-template-rows: repeat(7, 10px); 
     grid-auto-flow: column; 
     gap: 3px; 
-    overflow: visible; /* 그리드 밖으로 툴팁이 나가도 보이게 */
+    overflow: visible !important;
   }
 
-  /* 네모칸 스타일 */
   .heatmap-square {
     width: 10px;
     height: 10px;
     background-color: rgba(200, 200, 200, 0.2); 
     border-radius: 2px;
-    position: relative; /* 툴팁의 절대 위치 기준점 */
-    overflow: visible;  /* 내부의 툴팁이 밖으로 튀어나오게 허용 */
+    position: relative;
     cursor: pointer;
+    /* 마우스 호버 시 가장 앞으로 가져오기 */
+    transition: z-index 0s; 
+  }
+  
+  /* ★ 핵심 수정: 호버된 네모칸의 z-index를 높여서 툴팁이 가려지지 않게 함 */
+  .heatmap-square:hover {
+    z-index: 10001;
   }
   
   .heatmap-square.future { opacity: 0.1; pointer-events: none; }
@@ -169,78 +161,67 @@ export default ((opts?: Options) => {
   .heatmap-square.level-3 { background-color: var(--secondary); opacity: 0.8; }
   .heatmap-square.level-4 { background-color: var(--secondary); opacity: 1.0; }
 
-  /* ★★★ 툴팁 스타일 (수정됨) ★★★ */
-  .tooltip-container {
-    display: none; /* ★ 중요: 평소엔 아예 렌더링 공간을 차지하지 않음 */
+  /* --- 유령 래퍼 --- */
+  .sq-content-wrapper {
     position: absolute;
-    bottom: 14px; /* 네모칸 바로 위 */
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    overflow: visible;
+  }
+
+  /* --- 툴팁 카드 --- */
+  .tooltip-card {
+    display: none;
+    position: absolute;
+    bottom: 15px;
     left: 50%;
-    transform: translateX(-50%); /* 가운데 정렬 */
+    transform: translateX(-50%);
     
-    background-color: var(--light);
-    color: var(--darkgray);
-    border: 1px solid var(--lightgray);
+    background-color: var(--light) !important;
+    border: 1px solid var(--lightgray) !important;
+    color: var(--darkgray) !important;
+    
+    /* 너비 조정 */
+    min-width: 180px;
+    width: max-content;
+    max-width: 280px;
+    
+    padding: 12px;
     border-radius: 6px;
-    padding: 8px 12px;
-    z-index: 9999; /* 제일 위에 뜨도록 */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    
-    width: max-content; /* 내용에 맞게 너비 조절 */
-    min-width: 120px;
-    max-width: 220px;
-    
-    pointer-events: none; /* 깜빡임 방지 (링크 클릭 필요 시 auto로 변경 가능) */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    z-index: 10002 !important; /* 네모칸보다 더 위에 */
   }
 
-  /* 마우스 올렸을 때만 보이게 */
-  .heatmap-square:hover .tooltip-container {
-    display: block;
-    animation: fadeIn 0.2s ease-in-out;
-  }
-  
-  /* 마우스가 툴팁 위에 있을 때도 유지하려면 아래 주석 해제 */
-  /* .tooltip-container:hover { display: block; } */
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, 5px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
+  .heatmap-square:hover .tooltip-card {
+    display: block !important;
   }
 
-  /* 말풍선 꼬리 */
-  .tooltip-container::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: var(--light) transparent transparent transparent;
-  }
-
+  /* 툴팁 내부 스타일 (글자 크기 키움) */
   .tooltip-header {
     font-weight: bold;
-    font-size: 0.8rem;
-    margin-bottom: 5px;
     border-bottom: 1px solid var(--lightgray);
-    padding-bottom: 3px;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    font-size: 1.0rem; /* 날짜 크게 */
     text-align: center;
   }
   
   .tooltip-body {
-    font-size: 0.75rem;
-    max-height: 150px;
+    font-size: 0.9rem; /* 본문 크게 */
+    max-height: 250px;
     overflow-y: auto;
   }
   
   .tooltip-list {
-    list-style: none; 
-    padding: 0; 
+    list-style: none;
+    padding: 0;
     margin: 0;
   }
   
   .tooltip-list li {
-    margin: 2px 0;
+    margin-bottom: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -250,6 +231,7 @@ export default ((opts?: Options) => {
     text-decoration: none;
     color: var(--secondary);
     display: block;
+    padding: 2px 0;
   }
   
   .tooltip-list li a:hover {
@@ -259,6 +241,21 @@ export default ((opts?: Options) => {
   .no-activity {
     color: var(--gray);
     font-style: italic;
+    display: block;
+    text-align: center;
+    padding: 5px 0;
+  }
+  
+  /* 꼬리 모양 */
+  .tooltip-card::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: var(--light) transparent transparent transparent;
   }
   `
 
