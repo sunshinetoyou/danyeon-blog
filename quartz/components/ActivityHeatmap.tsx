@@ -14,6 +14,7 @@ export default ((opts?: Options) => {
   const ActivityHeatmap: QuartzComponent = ({ allFiles, displayClass }: QuartzComponentProps) => {
     const title = opts?.title ?? "Activity"
     
+    // 1. 날짜 계산
     const today = new Date()
     const currentDay = today.getDay() 
     const endDate = new Date(today)
@@ -21,6 +22,7 @@ export default ((opts?: Options) => {
     const startDate = new Date(endDate)
     startDate.setDate(endDate.getDate() - (52 * 7) + 1) 
 
+    // 2. 데이터 집계
     const dataset: Record<string, DailyActivity[]> = {}
     allFiles.forEach((file) => {
       if (opts?.targetTag && !file.frontmatter?.tags?.includes(opts.targetTag)) return
@@ -36,6 +38,7 @@ export default ((opts?: Options) => {
       }
     })
 
+    // 3. 그리드 생성
     const squares = []
     const currentDate = new Date(startDate)
 
@@ -54,6 +57,7 @@ export default ((opts?: Options) => {
       if (!isFuture && count > 3) level = 3
       if (!isFuture && count > 5) level = 4
 
+      // 툴팁 내용
       const tooltipContent = count > 0 ? (
         <ul class="tooltip-list">
           {dailyActivities.map((activity) => (
@@ -79,25 +83,9 @@ export default ((opts?: Options) => {
     return (
       <div class={`activity-heatmap-container ${displayClass ?? ""}`}>
         <div class="heatmap-title"><span>{title}</span></div>
-        <div class="heatmap-scroll-area">
+        <div class="heatmap-content">
           <div class="heatmap-grid">{squares}</div>
         </div>
-        
-        {/* ★ 자동 스크롤 스크립트: 로드 시 스크롤을 맨 오른쪽으로 이동 */}
-        <script dangerouslySetInnerHTML={{__html: `
-          function scrollHeatmapToRight() {
-            const areas = document.querySelectorAll('.heatmap-scroll-area');
-            areas.forEach(area => {
-              area.scrollLeft = area.scrollWidth;
-            });
-          }
-          // 초기 로드 시 실행
-          window.addEventListener('load', scrollHeatmapToRight);
-          // Quartz(Swup) 페이지 이동 시 실행
-          document.addEventListener('nav', scrollHeatmapToRight);
-          // 스크립트가 파싱되는 즉시 실행 (깜빡임 최소화)
-          scrollHeatmapToRight();
-        `}}></script>
       </div>
     )
   }
@@ -112,11 +100,6 @@ export default ((opts?: Options) => {
     background-color: var(--lightgray);
     border-radius: 8px;
     gap: 15px;
-    width: 100%;
-    max-width: 100%; 
-    box-sizing: border-box;
-    position: relative;
-    z-index: 1;
   }
 
   .heatmap-title {
@@ -124,7 +107,6 @@ export default ((opts?: Options) => {
     align-items: center;
     justify-content: center;
     width: 30px;
-    min-width: 30px;
     border-right: 2px solid var(--gray);
     padding-right: 10px;
   }
@@ -139,29 +121,17 @@ export default ((opts?: Options) => {
     letter-spacing: 2px;
   }
 
-  .heatmap-scroll-area {
+  .heatmap-content {
     flex-grow: 1;
-    overflow-x: auto;
-    min-width: 0; 
-    width: 100%;
-    padding-bottom: 5px;
-
-    /* ★ 스크롤바 숨기기 (기능은 유지) */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
+    overflow: visible; /* 툴팁이 잘리지 않게 중요 */
   }
   
-  /* ★ Chrome, Safari 스크롤바 숨기기 */
-  .heatmap-scroll-area::-webkit-scrollbar {
-    display: none;
-  }
-
   .heatmap-grid {
     display: grid;
     grid-template-rows: repeat(7, 10px); 
     grid-auto-flow: column; 
     gap: 3px; 
-    width: max-content; 
+    overflow: visible; /* 툴팁이 잘리지 않게 중요 */
   }
 
   .heatmap-square {
@@ -169,8 +139,13 @@ export default ((opts?: Options) => {
     height: 10px;
     background-color: rgba(200, 200, 200, 0.2); 
     border-radius: 2px;
-    position: relative;
+    position: relative; /* 툴팁 위치의 기준점 */
     cursor: pointer;
+  }
+
+  /* ★ 핵심 1: 호버 시 z-index를 높여서 툴팁을 최상단으로 올림 */
+  .heatmap-square:hover {
+    z-index: 1000; 
   }
   
   .heatmap-square.future { opacity: 0.1; pointer-events: none; }
@@ -184,57 +159,88 @@ export default ((opts?: Options) => {
 
   /* --- 툴팁 스타일 --- */
   .tooltip-container {
-    display: none;
-    position: fixed; 
-    z-index: 9999;
+    /* ★ 요청하신 핵심: 평소에는 아예 렌더링하지 않음 */
+    display: none; 
     
-    /* 위치 조정: 화면 중앙보다 약간 아래 */
-    bottom: 15%;
+    position: absolute;
+    bottom: 18px; /* 네모칸 위쪽으로 띄움 */
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%); /* 중앙 정렬 */
     
     background-color: var(--light);
     border: 1px solid var(--lightgray);
     color: var(--darkgray);
     
-    min-width: 200px;
-    max-width: 300px;
+    /* ★ 가독성 개선: 크기 키움 */
+    min-width: 180px; 
     width: max-content;
+    max-width: 280px;
     
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+    padding: 12px;
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     
+    /* 텍스트 줄바꿈 방지 및 정렬 */
     text-align: left;
-    white-space: normal;
-    animation: fadeIn 0.2s ease-out;
+    white-space: normal; 
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, 10px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
+  /* ★ 마우스 호버 시 등장 */
+  .heatmap-square:hover .tooltip-container {
+    display: block;
   }
 
-  .heatmap-square:hover .tooltip-container { display: block; }
-  .heatmap-square:hover { z-index: 1000; }
-  
+  /* 툴팁 내부 폰트 사이즈 키움 */
   .tooltip-header {
     font-weight: bold;
     border-bottom: 1px solid var(--lightgray);
     margin-bottom: 8px;
-    padding-bottom: 5px;
-    font-size: 1rem;
+    padding-bottom: 4px;
+    font-size: 0.95rem; /* 날짜 폰트 키움 */
   }
-  .tooltip-body { font-size: 0.9rem; max-height: 200px; overflow-y: auto; }
-  .tooltip-list li a { text-decoration: none; color: var(--secondary); }
-  .tooltip-list li a:hover { text-decoration: underline; }
-  .no-activity { color: var(--gray); font-style: italic; }
-
-  /* ★ 반응형: 화면이 좁아지면(950px 이하) 왼쪽 사이드바 숨김 */
-  @media (max-width: 950px) {
-    .sidebar.left {
-      display: none !important;
-    }
+  
+  .tooltip-body {
+    font-size: 0.9rem; /* 본문 폰트 키움 */
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .tooltip-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .tooltip-list li {
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  
+  .tooltip-list li a {
+    text-decoration: none;
+    color: var(--secondary);
+    display: inline-block;
+  }
+  
+  .tooltip-list li a:hover {
+    text-decoration: underline;
+  }
+  
+  .no-activity {
+    color: var(--gray);
+    font-style: italic;
+  }
+  
+  /* 말풍선 꼬리 */
+  .tooltip-container::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* 바닥 */
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: var(--light) transparent transparent transparent;
   }
   `
 
