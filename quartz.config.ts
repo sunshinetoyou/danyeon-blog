@@ -29,26 +29,26 @@ const config: QuartzConfig = {
       },
       colors: {
         lightMode: {
-          light: "#FBFBF5",      // 배경: 아이보리
-          lightgray: "#EAEAE0",  // 테두리
-          gray: "#9A9A8E",       // 보조 글씨
-          darkgray: "#4E4E48",   // 본문
-          dark: "#2B2B28",       // 제목
-          secondary: "#5E7C88",  // 강조색 (블루그레이)
-          tertiary: "#84A59D",   // 마우스 호버
-          highlight: "rgba(94, 124, 136, 0.15)", // 링크 배경
-          textHighlight: "#fff23688", // ★ 추가됨: 형광펜 (부드러운 노랑)
+          light: "#FBFBF5",
+          lightgray: "#EAEAE0",
+          gray: "#9A9A8E",
+          darkgray: "#4E4E48",
+          dark: "#2B2B28",
+          secondary: "#5E7C88",
+          tertiary: "#84A59D",
+          highlight: "rgba(94, 124, 136, 0.15)", 
+          textHighlight: "#fff23688",
         },
         darkMode: {
-          light: "#050505",      // 배경: 리얼 블랙
-          lightgray: "#1F1F1F",  // 테두리
-          gray: "#666666",       // 보조 글씨
-          darkgray: "#D4D4D4",   // 본문
-          dark: "#00FF41",       // 제목 (네온 그린)
-          secondary: "#00FF41",  // 강조색 (네온 그린)
-          tertiary: "#008F11",   // 마우스 호버
-          highlight: "rgba(0, 255, 65, 0.15)", // 링크 배경
-          textHighlight: "#00ff4188", // ★ 추가됨: 형광펜 (투명한 네온 그린)
+          light: "#161618",
+          lightgray: "#393639",
+          gray: "#646464",
+          darkgray: "#d4d4d4",
+          dark: "#ebebec",
+          secondary: "#7b97aa",
+          tertiary: "#84a59d",
+          highlight: "rgba(143, 159, 169, 0.15)",
+          textHighlight: "#b3aa0288",
         },
       },
     },
