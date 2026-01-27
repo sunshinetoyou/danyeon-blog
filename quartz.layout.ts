@@ -27,7 +27,7 @@ export const defaultContentPageLayout: PageLayout = {
     // 👇 "index(홈)" 페이지에서만 히트맵 보여주기
     Component.ConditionalRender({
       component: Component.ActivityHeatmap({ title: "🔥2026 HeatMap🔥" }),
-      condition: (file) => file.slug === "index",
+      condition: (file) => file.fileData.slug === "index",
     }),
   ],
   left: [
