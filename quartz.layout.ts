@@ -38,7 +38,11 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      title: "카테고리",
+      folderClickBehavior: "link",
+      folderDefaultState: "collapsed",
+    }),
   ],
   right: [
     Component.Graph(),
