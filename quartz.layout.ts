@@ -25,9 +25,35 @@ export const defaultContentPageLayout: PageLayout = {
     Component.ContentMeta(),
     Component.TagList(),
     // 👇 "index(홈)" 페이지에서만 히트맵 보여주기
+    // 👇 1. 전체 활동 (Total)
     Component.ConditionalRender({
-      component: Component.ActivityHeatmap({ title: "🔥2026 HeatMap🔥" }),
-      condition: (file) => file.fileData.slug === "index",
+      component: Component.ActivityHeatmap({ title: "BLOG" }),
+      condition: (page) => page.fileData.slug === "index",
+    }),
+
+    // 👇 2. 보안 활동 (Security)
+    Component.ConditionalRender({
+      component: Component.ActivityHeatmap({ 
+        title: "SECURITY", 
+        targetTag: "Security" // #AutoEver 태그가 있는 글만 추적
+      }),
+      condition: (page) => page.fileData.slug === "index",
+    }),
+    // 👇 3. 개발 활동 (DEV)
+    Component.ConditionalRender({
+      component: Component.ActivityHeatmap({ 
+        title: "DEVELOP", 
+        targetTag: "Dev" 
+      }),
+      condition: (page) => page.fileData.slug === "index",
+    }),
+    // 👇 4. PS 활동 (PS)
+    Component.ConditionalRender({
+      component: Component.ActivityHeatmap({ 
+        title: "PS", 
+        targetTag: "PS" 
+      }),
+      condition: (page) => page.fileData.slug === "index",
     }),
   ],
   left: [

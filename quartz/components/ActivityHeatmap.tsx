@@ -7,59 +7,77 @@ interface Options {
 
 export default ((opts?: Options) => {
   const ActivityHeatmap: QuartzComponent = ({ allFiles, displayClass }: QuartzComponentProps) => {
-    const title = opts?.title ?? "Activity Log"
+    const title = opts?.title ?? "Activity"
     
-    // 1. 오늘 날짜와 1년 전 날짜 계산
+    // 1. 날짜 계산: "오늘이 포함된 주"의 토요일을 끝으로 잡고, 52주 전 일요일을 시작으로 잡음
     const today = new Date()
-    const startDate = new Date(today)
-    startDate.setDate(today.getDate() - 365)
+    const currentDay = today.getDay() // 0(일) ~ 6(토)
     
-    // ★ 핵심: 시작일을 "그 주의 일요일"로 맞춰야 줄이 안 밀림
-    const dayOfWeek = startDate.getDay() // 0(일) ~ 6(토)
-    startDate.setDate(startDate.getDate() - dayOfWeek)
+    // 마지막 날짜 (End): 이번 주 토요일 (미래 날짜 포함해서 칸을 확보)
+    const endDate = new Date(today)
+    endDate.setDate(today.getDate() + (6 - currentDay))
+    
+    // 시작 날짜 (Start): 정확히 52주 전 일요일
+    const startDate = new Date(endDate)
+    startDate.setDate(endDate.getDate() - (52 * 7) + 1) // +1은 보정값
 
     // 2. 데이터 집계
     const dataset: Record<string, number> = {}
     allFiles.forEach((file) => {
+      // 태그 필터링 (targetTag가 있으면 해당 태그가 포함된 글만 카운트)
       if (opts?.targetTag && !file.frontmatter?.tags?.includes(opts.targetTag)) return
       
       const fileDate = file.dates?.created
       if (fileDate) {
-        const dateStr = fileDate.toISOString().split('T')[0]
+        // KST(한국 시간) 기준 날짜 변환 (ISOString은 UTC라 날짜가 밀릴 수 있음)
+        const offset = fileDate.getTimezoneOffset() * 60000
+        const localDate = new Date(fileDate.getTime() - offset)
+        const dateStr = localDate.toISOString().split('T')[0]
         dataset[dateStr] = (dataset[dateStr] || 0) + 1
       }
     })
 
-    // 3. 그리드 생성 (시작일 ~ 오늘)
+    // 3. 그리드 생성
     const squares = []
     const currentDate = new Date(startDate)
 
-    while (currentDate <= today) {
-      const dateStr = currentDate.toISOString().split('T')[0]
+    // 날짜 루프: 시작일부터 엔드일까지
+    while (currentDate <= endDate) {
+      // UTC 오프셋 보정하여 문자열 생성
+      const offset = currentDate.getTimezoneOffset() * 60000
+      const localCurrent = new Date(currentDate.getTime() - offset)
+      const dateStr = localCurrent.toISOString().split('T')[0]
+      
       const count = dataset[dateStr] || 0
       
+      // 미래 날짜인지 확인 (오늘 이후는 색칠 안 함)
+      const isFuture = currentDate > today
+
       let level = 0
-      if (count > 0) level = 1
-      if (count > 2) level = 2
-      if (count > 4) level = 3
-      if (count > 6) level = 4
+      if (!isFuture && count > 0) level = 1
+      if (!isFuture && count > 1) level = 2
+      if (!isFuture && count > 3) level = 3
+      if (!isFuture && count > 5) level = 4
 
       squares.push(
         <div 
-          class={`heatmap-square level-${level}`} 
-          title={`${dateStr}: ${count} posts`} // 마우스 올리면 날짜/개수 뜸
+          class={`heatmap-square level-${level} ${isFuture ? "future" : ""}`}
+          title={`${dateStr}: ${count} posts`} 
         ></div>
       )
       
-      // 다음 날짜로 이동
       currentDate.setDate(currentDate.getDate() + 1)
     }
 
     return (
-      <div class={`activity-heatmap ${displayClass ?? ""}`}>
-        <h3>{title}</h3>
-        <div class="heatmap-container">
-          {/* 요일 라벨 (월, 수, 금만 표시하거나 생략 가능) */}
+      <div class={`activity-heatmap-container ${displayClass ?? ""}`}>
+        {/* 왼쪽 세로 제목 */}
+        <div class="heatmap-title">
+          <span>{title}</span>
+        </div>
+        
+        {/* 오른쪽 히트맵 그리드 */}
+        <div class="heatmap-content">
           <div class="heatmap-grid">
             {squares}
           </div>
@@ -69,39 +87,71 @@ export default ((opts?: Options) => {
   }
 
   ActivityHeatmap.css = `
-  .activity-heatmap {
-    margin-top: 1.5rem;
+  .activity-heatmap-container {
     display: flex;
-    flex-direction: column;
-    align-items: center; /* 가운데 정렬 */
+    flex-direction: row; /* 가로 배치 */
+    align-items: center;
+    margin-top: 1rem;
+    padding: 10px;
+    background-color: var(--lightgray);
+    border-radius: 8px;
+    gap: 15px;
   }
-  .activity-heatmap h3 {
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+
+  /* 왼쪽 세로 제목 스타일 */
+  .heatmap-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; /* 제목 영역 너비 */
+    border-right: 2px solid var(--gray);
+    padding-right: 10px;
+  }
+
+  .heatmap-title span {
+    writing-mode: vertical-rl; /* 세로 쓰기 */
+    transform: rotate(180deg); /* 텍스트 방향 조정 */
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: var(--dark);
+    white-space: nowrap;
+    letter-spacing: 2px;
+  }
+
+  .heatmap-content {
+    flex-grow: 1;
+    overflow-x: auto; /* 화면 작으면 스크롤 */
   }
   
   .heatmap-grid {
     display: grid;
-    /* ★ 핵심: 세로 7칸(일~토) 고정 */
+    /* 세로 7칸 (일~토) 고정 */
     grid-template-rows: repeat(7, 10px); 
-    /* 데이터가 세로로 먼저 쌓이고 오른쪽으로 이동 */
     grid-auto-flow: column; 
-    gap: 3px; /* 칸 간격 */
+    gap: 3px; 
   }
 
   .heatmap-square {
     width: 10px;
     height: 10px;
-    background-color: rgba(200, 200, 200, 0.2); /* 빈 날짜 (연한 회색) */
+    background-color: rgba(200, 200, 200, 0.2); 
     border-radius: 2px;
   }
-
-  /* 다크모드 대응 빈 칸 색상 */
-  [saved-theme="dark"] .heatmap-square {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
   
-  /* 색상 레벨 (테마의 secondary 색상 활용) */
+  /* 미래 날짜는 아예 투명하게 혹은 더 연하게 */
+  .heatmap-square.future {
+    opacity: 0.1;
+  }
+
+  /* 다크모드 대응 */
+  [saved-theme="dark"] .heatmap-square {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  [saved-theme="dark"] .activity-heatmap-container {
+    background-color: var(--lightgray); 
+  }
+
+  /* 색상 레벨 (테마 색상 활용) */
   .heatmap-square.level-1 { background-color: var(--secondary); opacity: 0.4; }
   .heatmap-square.level-2 { background-color: var(--secondary); opacity: 0.6; }
   .heatmap-square.level-3 { background-color: var(--secondary); opacity: 0.8; }
