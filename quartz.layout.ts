@@ -47,7 +47,9 @@ export const defaultContentPageLayout: PageLayout = {
   right: [
     Component.Graph(),
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.Backlinks(),
+    Component.ActivityHeatmap({ 
+      title: "✍️ 블로그 활동 기록" 
+    }),
     Component.RecentNotes({
       title: "최근 작성한 글",
       limit: 3,
