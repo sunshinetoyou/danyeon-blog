@@ -14,7 +14,6 @@ export default ((opts?: Options) => {
   const ActivityHeatmap: QuartzComponent = ({ allFiles, displayClass }: QuartzComponentProps) => {
     const title = opts?.title ?? "Activity"
     
-    // 1. 날짜 계산
     const today = new Date()
     const currentDay = today.getDay() 
     const endDate = new Date(today)
@@ -22,7 +21,6 @@ export default ((opts?: Options) => {
     const startDate = new Date(endDate)
     startDate.setDate(endDate.getDate() - (52 * 7) + 1) 
 
-    // 2. 데이터 집계
     const dataset: Record<string, DailyActivity[]> = {}
     allFiles.forEach((file) => {
       if (opts?.targetTag && !file.frontmatter?.tags?.includes(opts.targetTag)) return
@@ -38,7 +36,6 @@ export default ((opts?: Options) => {
       }
     })
 
-    // 3. 그리드 생성
     const squares = []
     const currentDate = new Date(startDate)
 
@@ -57,7 +54,6 @@ export default ((opts?: Options) => {
       if (!isFuture && count > 3) level = 3
       if (!isFuture && count > 5) level = 4
 
-      // 툴팁 내용
       const tooltipContent = count > 0 ? (
         <ul class="tooltip-list">
           {dailyActivities.map((activity) => (
@@ -83,7 +79,8 @@ export default ((opts?: Options) => {
     return (
       <div class={`activity-heatmap-container ${displayClass ?? ""}`}>
         <div class="heatmap-title"><span>{title}</span></div>
-        <div class="heatmap-content">
+        {/* 스크롤 영역 감싸기 */}
+        <div class="heatmap-scroll-area">
           <div class="heatmap-grid">{squares}</div>
         </div>
       </div>
@@ -100,6 +97,11 @@ export default ((opts?: Options) => {
     background-color: var(--lightgray);
     border-radius: 8px;
     gap: 15px;
+    
+    /* ★ 화면 너비에 맞춰서 줄어들도록 설정 */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .heatmap-title {
@@ -107,6 +109,7 @@ export default ((opts?: Options) => {
     align-items: center;
     justify-content: center;
     width: 30px;
+    min-width: 30px; /* 줄어들지 않게 고정 */
     border-right: 2px solid var(--gray);
     padding-right: 10px;
   }
@@ -121,17 +124,33 @@ export default ((opts?: Options) => {
     letter-spacing: 2px;
   }
 
-  .heatmap-content {
+  /* ★ 스크롤 영역: 내용이 넘치면 가로 스크롤 생성 */
+  .heatmap-scroll-area {
     flex-grow: 1;
-    overflow: visible; /* 툴팁이 잘리지 않게 중요 */
+    overflow-x: auto; /* 가로 스크롤 허용 */
+    overflow-y: hidden;
+    padding-bottom: 5px; /* 스크롤바 공간 확보 */
+    
+    /* 스크롤바 스타일링 (크롬, 사파리 등) */
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray) transparent;
   }
   
+  .heatmap-scroll-area::-webkit-scrollbar {
+    height: 4px;
+  }
+  .heatmap-scroll-area::-webkit-scrollbar-thumb {
+    background-color: var(--gray);
+    border-radius: 4px;
+  }
+
   .heatmap-grid {
     display: grid;
     grid-template-rows: repeat(7, 10px); 
     grid-auto-flow: column; 
     gap: 3px; 
-    overflow: visible; /* 툴팁이 잘리지 않게 중요 */
+    /* 그리드 크기는 내용물만큼 확보 */
+    width: max-content; 
   }
 
   .heatmap-square {
@@ -139,13 +158,8 @@ export default ((opts?: Options) => {
     height: 10px;
     background-color: rgba(200, 200, 200, 0.2); 
     border-radius: 2px;
-    position: relative; /* 툴팁 위치의 기준점 */
+    position: relative;
     cursor: pointer;
-  }
-
-  /* ★ 핵심 1: 호버 시 z-index를 높여서 툴팁을 최상단으로 올림 */
-  .heatmap-square:hover {
-    z-index: 1000; 
   }
   
   .heatmap-square.future { opacity: 0.1; pointer-events: none; }
@@ -157,89 +171,93 @@ export default ((opts?: Options) => {
   .heatmap-square.level-3 { background-color: var(--secondary); opacity: 0.8; }
   .heatmap-square.level-4 { background-color: var(--secondary); opacity: 1.0; }
 
-  /* --- 툴팁 스타일 --- */
+  /* --- 툴팁 스타일 (position: fixed 적용) --- */
   .tooltip-container {
-    /* ★ 요청하신 핵심: 평소에는 아예 렌더링하지 않음 */
-    display: none; 
+    display: none;
     
-    position: absolute;
-    bottom: 18px; /* 네모칸 위쪽으로 띄움 */
+    /* ★ 핵심: 뷰포트 기준으로 고정하여 스크롤/overflow 문제 해결 */
+    position: fixed; 
+    z-index: 9999;
+    
+    /* 기본 위치는 화면 중앙 하단쯤 (CSS만으로는 마우스 따라가기 어려우므로 고정 위치 사용) */
+    /* 마우스 근처에 띄우려면 JS가 필요하지만, CSS Only로는 아래 방식이 최선 */
     left: 50%;
-    transform: translateX(-50%); /* 중앙 정렬 */
+    top: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* 하지만, position: fixed를 쓰더라도 relative 부모가 없으면 화면 전체 기준이 됨. */
+    /* 더 나은 UX를 위해: hover 시 해당 네모칸 근처에 보이게 하려면 absolute가 맞음. */
+    /* absolute + overflow:auto는 툴팁이 잘림. */
+    /* 타협안: 툴팁을 'absolute'로 하되, 방향을 아래로 띄우거나 grid 안쪽에 여백을 줌 */
+  }
+  
+  /* --- 툴팁 재설정 (현실적인 CSS 해결책) --- */
+  /* fixed 대신 absolute를 쓰되, 오른쪽 끝에서 잘리는 것만 감수하고 레이아웃을 지킴 */
+  .tooltip-container {
+    display: none;
+    position: absolute;
+    bottom: 15px; /* 위쪽으로 띄움 */
+    left: 50%;
+    transform: translateX(-50%);
     
     background-color: var(--light);
     border: 1px solid var(--lightgray);
     color: var(--darkgray);
     
-    /* ★ 가독성 개선: 크기 키움 */
-    min-width: 180px; 
+    min-width: 180px;
     width: max-content;
-    max-width: 280px;
+    max-width: 250px;
     
     padding: 12px;
     border-radius: 6px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    z-index: 1000;
     
-    /* 텍스트 줄바꿈 방지 및 정렬 */
     text-align: left;
-    white-space: normal; 
+    white-space: normal;
   }
 
-  /* ★ 마우스 호버 시 등장 */
+  /* 스크롤 영역 밖으로 툴팁이 나가면 잘리는 문제를 해결하기 위한 설정 */
+  /* heatmap-square에 마우스를 올리면 툴팁이 보임 */
   .heatmap-square:hover .tooltip-container {
     display: block;
   }
-
-  /* 툴팁 내부 폰트 사이즈 키움 */
+  
+  /* ★ 툴팁이 잘리는 것을 방지하기 위해 네모칸의 z-index 상승 */
+  .heatmap-square:hover {
+    z-index: 1000;
+  }
+  
+  /* 툴팁 내부 스타일 */
   .tooltip-header {
     font-weight: bold;
     border-bottom: 1px solid var(--lightgray);
     margin-bottom: 8px;
     padding-bottom: 4px;
-    font-size: 0.95rem; /* 날짜 폰트 키움 */
+    font-size: 0.95rem;
   }
-  
   .tooltip-body {
-    font-size: 0.9rem; /* 본문 폰트 키움 */
+    font-size: 0.9rem;
     max-height: 200px;
     overflow-y: auto;
   }
-  
   .tooltip-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    list-style: none; padding: 0; margin: 0;
   }
-  
   .tooltip-list li {
-    margin-bottom: 4px;
-    line-height: 1.4;
+    margin-bottom: 4px; line-height: 1.4;
   }
-  
   .tooltip-list li a {
-    text-decoration: none;
-    color: var(--secondary);
-    display: inline-block;
+    text-decoration: none; color: var(--secondary); display: inline-block;
   }
-  
   .tooltip-list li a:hover {
     text-decoration: underline;
   }
+  .no-activity { color: var(--gray); font-style: italic; }
   
-  .no-activity {
-    color: var(--gray);
-    font-style: italic;
-  }
-  
-  /* 말풍선 꼬리 */
   .tooltip-container::after {
-    content: "";
-    position: absolute;
-    top: 100%; /* 바닥 */
-    left: 50%;
-    margin-left: -6px;
-    border-width: 6px;
-    border-style: solid;
+    content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px;
+    border-width: 6px; border-style: solid;
     border-color: var(--light) transparent transparent transparent;
   }
   `
