@@ -79,10 +79,25 @@ export default ((opts?: Options) => {
     return (
       <div class={`activity-heatmap-container ${displayClass ?? ""}`}>
         <div class="heatmap-title"><span>{title}</span></div>
-        {/* 스크롤 영역 감싸기 */}
         <div class="heatmap-scroll-area">
           <div class="heatmap-grid">{squares}</div>
         </div>
+        
+        {/* ★ 자동 스크롤 스크립트: 로드 시 스크롤을 맨 오른쪽으로 이동 */}
+        <script dangerouslySetInnerHTML={{__html: `
+          function scrollHeatmapToRight() {
+            const areas = document.querySelectorAll('.heatmap-scroll-area');
+            areas.forEach(area => {
+              area.scrollLeft = area.scrollWidth;
+            });
+          }
+          // 초기 로드 시 실행
+          window.addEventListener('load', scrollHeatmapToRight);
+          // Quartz(Swup) 페이지 이동 시 실행
+          document.addEventListener('nav', scrollHeatmapToRight);
+          // 스크립트가 파싱되는 즉시 실행 (깜빡임 최소화)
+          scrollHeatmapToRight();
+        `}}></script>
       </div>
     )
   }
@@ -97,11 +112,11 @@ export default ((opts?: Options) => {
     background-color: var(--lightgray);
     border-radius: 8px;
     gap: 15px;
-    
-    /* ★ 화면 너비에 맞춰서 줄어들도록 설정 */
     width: 100%;
-    max-width: 100%;
+    max-width: 100%; 
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
   }
 
   .heatmap-title {
@@ -109,7 +124,7 @@ export default ((opts?: Options) => {
     align-items: center;
     justify-content: center;
     width: 30px;
-    min-width: 30px; /* 줄어들지 않게 고정 */
+    min-width: 30px;
     border-right: 2px solid var(--gray);
     padding-right: 10px;
   }
@@ -124,24 +139,21 @@ export default ((opts?: Options) => {
     letter-spacing: 2px;
   }
 
-  /* ★ 스크롤 영역: 내용이 넘치면 가로 스크롤 생성 */
   .heatmap-scroll-area {
     flex-grow: 1;
-    overflow-x: auto; /* 가로 스크롤 허용 */
-    overflow-y: hidden;
-    padding-bottom: 5px; /* 스크롤바 공간 확보 */
-    
-    /* 스크롤바 스타일링 (크롬, 사파리 등) */
-    scrollbar-width: thin;
-    scrollbar-color: var(--gray) transparent;
+    overflow-x: auto;
+    min-width: 0; 
+    width: 100%;
+    padding-bottom: 5px;
+
+    /* ★ 스크롤바 숨기기 (기능은 유지) */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
   }
   
+  /* ★ Chrome, Safari 스크롤바 숨기기 */
   .heatmap-scroll-area::-webkit-scrollbar {
-    height: 4px;
-  }
-  .heatmap-scroll-area::-webkit-scrollbar-thumb {
-    background-color: var(--gray);
-    border-radius: 4px;
+    display: none;
   }
 
   .heatmap-grid {
@@ -149,7 +161,6 @@ export default ((opts?: Options) => {
     grid-template-rows: repeat(7, 10px); 
     grid-auto-flow: column; 
     gap: 3px; 
-    /* 그리드 크기는 내용물만큼 확보 */
     width: max-content; 
   }
 
@@ -171,32 +182,14 @@ export default ((opts?: Options) => {
   .heatmap-square.level-3 { background-color: var(--secondary); opacity: 0.8; }
   .heatmap-square.level-4 { background-color: var(--secondary); opacity: 1.0; }
 
-  /* --- 툴팁 스타일 (position: fixed 적용) --- */
+  /* --- 툴팁 스타일 --- */
   .tooltip-container {
     display: none;
-    
-    /* ★ 핵심: 뷰포트 기준으로 고정하여 스크롤/overflow 문제 해결 */
     position: fixed; 
     z-index: 9999;
     
-    /* 기본 위치는 화면 중앙 하단쯤 (CSS만으로는 마우스 따라가기 어려우므로 고정 위치 사용) */
-    /* 마우스 근처에 띄우려면 JS가 필요하지만, CSS Only로는 아래 방식이 최선 */
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    
-    /* 하지만, position: fixed를 쓰더라도 relative 부모가 없으면 화면 전체 기준이 됨. */
-    /* 더 나은 UX를 위해: hover 시 해당 네모칸 근처에 보이게 하려면 absolute가 맞음. */
-    /* absolute + overflow:auto는 툴팁이 잘림. */
-    /* 타협안: 툴팁을 'absolute'로 하되, 방향을 아래로 띄우거나 grid 안쪽에 여백을 줌 */
-  }
-  
-  /* --- 툴팁 재설정 (현실적인 CSS 해결책) --- */
-  /* fixed 대신 absolute를 쓰되, 오른쪽 끝에서 잘리는 것만 감수하고 레이아웃을 지킴 */
-  .tooltip-container {
-    display: none;
-    position: absolute;
-    bottom: 15px; /* 위쪽으로 띄움 */
+    /* 위치 조정: 화면 중앙보다 약간 아래 */
+    bottom: 15%;
     left: 50%;
     transform: translateX(-50%);
     
@@ -204,61 +197,44 @@ export default ((opts?: Options) => {
     border: 1px solid var(--lightgray);
     color: var(--darkgray);
     
-    min-width: 180px;
+    min-width: 200px;
+    max-width: 300px;
     width: max-content;
-    max-width: 250px;
     
-    padding: 12px;
-    border-radius: 6px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-    z-index: 1000;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
     
     text-align: left;
     white-space: normal;
+    animation: fadeIn 0.2s ease-out;
   }
 
-  /* 스크롤 영역 밖으로 툴팁이 나가면 잘리는 문제를 해결하기 위한 설정 */
-  /* heatmap-square에 마우스를 올리면 툴팁이 보임 */
-  .heatmap-square:hover .tooltip-container {
-    display: block;
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, 10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
   }
+
+  .heatmap-square:hover .tooltip-container { display: block; }
+  .heatmap-square:hover { z-index: 1000; }
   
-  /* ★ 툴팁이 잘리는 것을 방지하기 위해 네모칸의 z-index 상승 */
-  .heatmap-square:hover {
-    z-index: 1000;
-  }
-  
-  /* 툴팁 내부 스타일 */
   .tooltip-header {
     font-weight: bold;
     border-bottom: 1px solid var(--lightgray);
     margin-bottom: 8px;
-    padding-bottom: 4px;
-    font-size: 0.95rem;
+    padding-bottom: 5px;
+    font-size: 1rem;
   }
-  .tooltip-body {
-    font-size: 0.9rem;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  .tooltip-list {
-    list-style: none; padding: 0; margin: 0;
-  }
-  .tooltip-list li {
-    margin-bottom: 4px; line-height: 1.4;
-  }
-  .tooltip-list li a {
-    text-decoration: none; color: var(--secondary); display: inline-block;
-  }
-  .tooltip-list li a:hover {
-    text-decoration: underline;
-  }
+  .tooltip-body { font-size: 0.9rem; max-height: 200px; overflow-y: auto; }
+  .tooltip-list li a { text-decoration: none; color: var(--secondary); }
+  .tooltip-list li a:hover { text-decoration: underline; }
   .no-activity { color: var(--gray); font-style: italic; }
-  
-  .tooltip-container::after {
-    content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px;
-    border-width: 6px; border-style: solid;
-    border-color: var(--light) transparent transparent transparent;
+
+  /* ★ 반응형: 화면이 좁아지면(950px 이하) 왼쪽 사이드바 숨김 */
+  @media (max-width: 950px) {
+    .sidebar.left {
+      display: none !important;
+    }
   }
   `
 
