@@ -48,6 +48,10 @@ export const defaultContentPageLayout: PageLayout = {
     Component.Graph(),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(),
+    Component.RecentNotes({
+      title: "최근 작성한 글",
+      limit: 3,
+    }),
   ],
 }
 
@@ -66,7 +70,11 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      title: "카테고리",
+      folderClickBehavior: "link",
+      folderDefaultState: "collapsed",
+    }),
   ],
   right: [],
 }
