@@ -24,6 +24,11 @@ export const defaultContentPageLayout: PageLayout = {
     Component.ArticleTitle(),
     Component.ContentMeta(),
     Component.TagList(),
+    // 👇 "index(홈)" 페이지에서만 히트맵 보여주기
+    Component.ConditionalRender({
+      component: Component.ActivityHeatmap({ title: "🔥2026 HeatMap🔥" }),
+      condition: (file) => file.slug === "index",
+    }),
   ],
   left: [
     Component.PageTitle(),
@@ -47,9 +52,6 @@ export const defaultContentPageLayout: PageLayout = {
   right: [
     Component.Graph(),
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.ActivityHeatmap({ 
-      title: "✍️ 블로그 활동 기록" 
-    }),
     Component.RecentNotes({
       title: "최근 작성한 글",
       limit: 3,

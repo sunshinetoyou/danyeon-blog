@@ -1,94 +1,111 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
-import style from "./styles/activityHeatmap.scss"
 
 interface Options {
   title?: string
-  targetTag?: string // 특정 태그만 추적 (비워두면 모든 글 추적)
+  targetTag?: string 
 }
 
 export default ((opts?: Options) => {
   const ActivityHeatmap: QuartzComponent = ({ allFiles, displayClass }: QuartzComponentProps) => {
     const title = opts?.title ?? "Activity Log"
     
-    // 1. 날짜 데이터 준비 (오늘부터 180일 전까지)
+    // 1. 오늘 날짜와 1년 전 날짜 계산
     const today = new Date()
-    const daysToShow = 150 // 보여줄 날짜 수
-    const dataset: Record<string, number> = {}
+    const startDate = new Date(today)
+    startDate.setDate(today.getDate() - 365)
     
-    // 2. 파일 스캔하여 날짜별 카운트
+    // ★ 핵심: 시작일을 "그 주의 일요일"로 맞춰야 줄이 안 밀림
+    const dayOfWeek = startDate.getDay() // 0(일) ~ 6(토)
+    startDate.setDate(startDate.getDate() - dayOfWeek)
+
+    // 2. 데이터 집계
+    const dataset: Record<string, number> = {}
     allFiles.forEach((file) => {
-      // 태그 필터링
-      if (opts?.targetTag && !file.frontmatter?.tags?.includes(opts.targetTag)) {
-        return
-      }
+      if (opts?.targetTag && !file.frontmatter?.tags?.includes(opts.targetTag)) return
       
-      // 날짜 추출 (수정일이 아닌 작성일 date 기준)
       const fileDate = file.dates?.created
       if (fileDate) {
-        const dateStr = fileDate.toISOString().split('T')[0] // YYYY-MM-DD
+        const dateStr = fileDate.toISOString().split('T')[0]
         dataset[dateStr] = (dataset[dateStr] || 0) + 1
       }
     })
 
-    // 3. 그리드 생성
+    // 3. 그리드 생성 (시작일 ~ 오늘)
     const squares = []
-    for (let i = daysToShow; i >= 0; i--) {
-      const d = new Date()
-      d.setDate(today.getDate() - i)
-      const dateStr = d.toISOString().split('T')[0]
+    const currentDate = new Date(startDate)
+
+    while (currentDate <= today) {
+      const dateStr = currentDate.toISOString().split('T')[0]
       const count = dataset[dateStr] || 0
       
-      // 색상 레벨 (0~4단계)
       let level = 0
       if (count > 0) level = 1
       if (count > 2) level = 2
       if (count > 4) level = 3
-      
+      if (count > 6) level = 4
+
       squares.push(
         <div 
           class={`heatmap-square level-${level}`} 
-          title={`${dateStr}: ${count} posts`}
+          title={`${dateStr}: ${count} posts`} // 마우스 올리면 날짜/개수 뜸
         ></div>
       )
+      
+      // 다음 날짜로 이동
+      currentDate.setDate(currentDate.getDate() + 1)
     }
 
     return (
       <div class={`activity-heatmap ${displayClass ?? ""}`}>
         <h3>{title}</h3>
-        <div class="heatmap-grid">
-          {squares}
+        <div class="heatmap-container">
+          {/* 요일 라벨 (월, 수, 금만 표시하거나 생략 가능) */}
+          <div class="heatmap-grid">
+            {squares}
+          </div>
         </div>
       </div>
     )
   }
 
-  // CSS 스타일 (GitHub 잔디 스타일)
   ActivityHeatmap.css = `
   .activity-heatmap {
     margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 가운데 정렬 */
   }
   .activity-heatmap h3 {
     margin-bottom: 0.5rem;
     font-size: 1rem;
-    color: var(--dark);
   }
+  
   .heatmap-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px;
-    max-width: 100%;
+    display: grid;
+    /* ★ 핵심: 세로 7칸(일~토) 고정 */
+    grid-template-rows: repeat(7, 10px); 
+    /* 데이터가 세로로 먼저 쌓이고 오른쪽으로 이동 */
+    grid-auto-flow: column; 
+    gap: 3px; /* 칸 간격 */
   }
+
   .heatmap-square {
     width: 10px;
     height: 10px;
-    background-color: var(--lightgray); /* 레벨 0 (빈 날) */
+    background-color: rgba(200, 200, 200, 0.2); /* 빈 날짜 (연한 회색) */
     border-radius: 2px;
   }
+
+  /* 다크모드 대응 빈 칸 색상 */
+  [saved-theme="dark"] .heatmap-square {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
   
-  /* 색상 레벨 (테마 색상 활용) */
+  /* 색상 레벨 (테마의 secondary 색상 활용) */
   .heatmap-square.level-1 { background-color: var(--secondary); opacity: 0.4; }
-  .heatmap-square.level-2 { background-color: var(--secondary); opacity: 0.7; }
-  .heatmap-square.level-3 { background-color: var(--secondary); opacity: 1.0; }
+  .heatmap-square.level-2 { background-color: var(--secondary); opacity: 0.6; }
+  .heatmap-square.level-3 { background-color: var(--secondary); opacity: 0.8; }
+  .heatmap-square.level-4 { background-color: var(--secondary); opacity: 1.0; }
   `
 
   return ActivityHeatmap
