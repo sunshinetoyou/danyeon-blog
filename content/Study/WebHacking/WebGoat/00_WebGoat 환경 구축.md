@@ -3,6 +3,8 @@ title: WebGoat 환경 구축
 tags:
   - WebHacking
   - WebGoat
+draft: "true"
+date:
 ---
 ## What is WebGoat?
 
