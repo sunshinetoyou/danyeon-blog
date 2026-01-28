@@ -17,7 +17,7 @@ const config: QuartzConfig = {
     },
     locale: "ko-KR",
     baseUrl: "sunshinetoyou.github.io/danyeon-blog",
-    ignorePatterns: ["private", "templates", ".obsidian"],
+    ignorePatterns: ["private", "templates", ".obsidian", "assets"],
     defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",

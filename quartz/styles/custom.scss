@@ -1,3 +1,23 @@
 @use "./base.scss";
 
 // put your custom CSS here!
+
+/* --- 이미지 및 캡션 자동 정렬 커스텀 --- */
+
+/* 1. 블로그 본문의 모든 이미지를 가운데 정렬 */
+article p > img {
+  display: block;
+  margin: 0 auto; /* 좌우 여백 자동 -> 가운데 정렬 */
+  max-width: 100%; /* 모바일 뚫고 나가는 것 방지 */
+}
+
+/* 2. 이미지 바로 아래에 있는 '이탤릭체(기울임꼴)'를 캡션처럼 보이게 가운데 정렬 */
+article p > em {
+  display: block;
+  text-align: center;
+  font-size: 0.9rem; /* 글씨 약간 작게 */
+  color: #888;       /* 회색으로 */
+  margin-top: -10px; /* 이미지랑 좀 더 붙게 */
+  margin-bottom: 20px;
+  font-style: normal; /* 기울임 꼴 싫으면 normal로 변경 */
+}
