@@ -5,7 +5,6 @@ tags:
   - Ubuntu24_04
   - VirtualBox
 date: 2026-01-28
-draft: "false"
 ---
 ## 개발 환경
 
@@ -18,7 +17,7 @@ draft: "false"
 
 ### 1. 사전 설정 및 저장소 추가
 
-```bash title="Terminal"
+```bash
 # 1. 필수 패키지 설치
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl
@@ -35,7 +34,7 @@ sudo apt-get update
 ```
 
 ### 2. Docker 엔진 설치&실행
-``` bash title="Terminal"
+``` bash
 # 1. Docker 엔진 설치
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
