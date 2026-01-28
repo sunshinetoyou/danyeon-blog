@@ -3,7 +3,9 @@ title: Docker 설치 (Ubuntu 24.04 LTS)
 tags:
   - Docker
   - Ubuntu24_04
+  - VirtualBox
 date: 2026-01-28
+draft: "false"
 ---
 ## 개발 환경
 
