@@ -6,7 +6,7 @@ tags:
   - VirtualBox
 date: 2026-01-28
 ---
-## 개발 환경
+## 실습 환경
 
 > [!info] 🛠️ 실습 환경
 > - **OS**: Ubuntu 24.04 LTS (VM, VirtualBox)

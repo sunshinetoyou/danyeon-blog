@@ -1,3 +1,3 @@
 ---
-title: WebGoat
+title: 🐐 WebGoat
 ---
