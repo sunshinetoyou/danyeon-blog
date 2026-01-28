@@ -50,5 +50,5 @@ docker run hello-world
 
 ## 실행 결과
 
-![[assets/docker_test.png|650]]
+![[/assets/docker_test.png|650]]
 *▲ 그림 1. 도커 설치 결과*
