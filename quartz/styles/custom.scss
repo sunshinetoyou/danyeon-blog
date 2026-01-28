@@ -3,7 +3,6 @@
 // put your custom CSS here!
 
 /* --- 이미지 및 캡션 자동 정렬 커스텀 --- */
-
 /* 1. 블로그 본문의 모든 이미지를 가운데 정렬 */
 article p > img {
   display: block;
@@ -21,4 +20,26 @@ article p > em {
   margin-top: 10;       /* 위로 끌어올리는 설정(-10px) 제거 */
   margin-bottom: 2rem; /* 다음 문단과 간격 벌리기 */
   font-style: normal; /* 기울임 꼴 싫으면 normal로 변경 */
+}
+
+/* 코드 블럭 제목(Terminal) 스타일링 */
+div[data-rehype-pretty-code-fragment] {
+  position: relative;
+  margin-top: 2rem;
+
+  /* 제목 부분 스타일 */
+  [data-rehype-pretty-code-title] {
+    position: absolute;
+    top: -1.2rem;       /* 코드창 바로 위에 위치 */
+    left: 0.5rem;
+    padding: 0.2rem 0.8rem;
+    font-size: 0.8rem;
+    font-family: var(--codeFont);
+    background: #282c34; /* 코드 블럭 배경색과 맞추세요 */
+    color: #abb2bf;     /* 글자색 */
+    border: 1px solid #3e4451;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    z-index: 1;
+  }
 }
