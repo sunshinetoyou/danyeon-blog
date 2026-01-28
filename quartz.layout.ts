@@ -73,6 +73,7 @@ export const defaultContentPageLayout: PageLayout = {
       title: "카테고리",
       folderClickBehavior: "link",
       folderDefaultState: "collapsed",
+      filterFn: (node) => node.displayName !== "assets",
     }),
   ],
   right: [
@@ -104,6 +105,7 @@ export const defaultListPageLayout: PageLayout = {
       title: "카테고리",
       folderClickBehavior: "link",
       folderDefaultState: "collapsed",
+      filterFn: (node) => node.displayName !== "assets",
     }),
   ],
   right: [],
