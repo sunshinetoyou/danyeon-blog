@@ -1,7 +1,10 @@
 ---
 title: Web Hacking
 date: 2026-01-27
+webgoat_value:
 ---
-# WEB Hacking
+# Web Hacking Study
 
-오토에버 활동 등을 통해 공부한 PS 기록입니다.
+### 1. [[WebGoat/index|🐐 WebGoat]]
+OWASP에서 만든 교육용 취약한 웹 애플리케이션입니다.
+<progress value="0" max="100"></progress> **45% 달성**
