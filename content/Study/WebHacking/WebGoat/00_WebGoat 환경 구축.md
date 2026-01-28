@@ -4,7 +4,7 @@ tags:
   - WebHacking
   - WebGoat
 draft: "true"
-date:
+date: 2026-01-28
 ---
 ## What is WebGoat?
 
