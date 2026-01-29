@@ -43,7 +43,7 @@ WebGoat 사이드 바에서 `General`>`HTTP Basics`를 실습한다.
 ![[Pasted image 20260129103100.png|650]]
 *▲ 네트워크 패킷(Headers)
 
-![[Pasted image 20260129103952.png]]
+![[Pasted image 20260129103952.png|650]]
 *▲/src/main/java/org/owasp/webgoat/lessons/httpbasics/HttpBasicsLesson.java*
 
 ---
