@@ -54,11 +54,11 @@ WebGoat 사이드 바에서 `General`>`HTTP Basics`를 실습한다.
 *▲ Quiz 1, 2*
 
 - 요청(req)의 type은 POST인가 GET인가?
-- `magic number의 값은?`
+- `magic number`의 값은?
 
 <small>⚠️해당 로직은 위에서 확인한 /attack1 요청을 사용하지 않습니다.</small>
 #### Analysis
-첫 번째 예제
+devTools로 패킷을 분석해보면, Request Method가 `POST` 인 것을 확인할 수 있다.
 
 ![[Pasted image 20260129113046.png]]
 *▲ `/attack2` 요청 식별*
