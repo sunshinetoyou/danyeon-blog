@@ -38,9 +38,9 @@ WebGoat 사이드 바에서 `General`>`HTTP Basics`를 실습한다.
 ![[Pasted image 20260129102734.png]]
 *▲출력 결과*
 #### Analysis
-Devtools로 해당 네트워크 패킷을 분석하고, 소스코드를 탐색해서 내부 작동 원리를 파악하자.
+간단히 Google Devtools로 해당 네트워크 패킷을 분석하고, 소스코드를 탐색해서 내부 작동 원리를 파악해보자.
 
-![[Pasted image 20260129103100.png]]
+![[Pasted image 20260129103100.png|650]]
 *▲ 네트워크 패킷(Headers)
 
 ![[Pasted image 20260129103952.png]]
