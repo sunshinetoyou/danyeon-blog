@@ -69,7 +69,9 @@ devTools로 패킷을 분석해보면, Request Method가 `POST` 인 것을 확�
 ![[Pasted image 20260129163716.png]]
 *▲`/attack2` payload 식별*
 
-Burp Suite 였다면 해당 패킷을 인터셉트하여
+Burp Suite 였다면 해당 패킷을 인터셉트하여 중간에 컨닝해서 바꿀 수 있었겠지만,,
+
+DevTools에서 인터셉트를 못해서, 입력창에서 정답을 입력 후 
 
 ###
 
