@@ -15,19 +15,19 @@ WebGoat는 OWASP Top 10 취약점을 실습할 수 있는 환경을 의도적으
 
 OWASP Top 10에 대한 정리는 [[OWASP TOP 10]]에 적어둘 예정.
 
-## 배경 지식(간단)
+%% ## 배경 지식(간단)
 
 ### Proxy
 
 ### Loopback Proxy
 
-### Burp Suite
+### Burp Suite %%
 
 
 ## WebGoat - HTTP Basics
 
-잡설이 길었다. 바로 실습으로 들어가자.
-WebGoat 사이드바에서 `General`>`HTTP Basics`를 실습한다.
+%% 잡설이 길었다. 바로 실습으로 들어가자. %%
+WebGoat 사이드 바에서 `General`>`HTTP Basics`를 실습한다.
 ### **Try it!**
 
 #### Recon
