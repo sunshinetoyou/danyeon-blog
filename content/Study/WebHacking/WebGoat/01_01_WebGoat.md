@@ -63,7 +63,7 @@ devTools로 패킷을 분석해보면, Request Method가 `POST` 인 것을 확�
 ![[Pasted image 20260129113046.png]]
 *▲ `/attack2` 헤더*
 
-또한, Payload에서 Requests 시에 같이 보내지는 데이터를 보면, 다음과 같이 `` 
+또한, Payload에서 Requests 시에 같이 보내지는 데이터를 보면, 다음과 같이 `magic_num`(정답)이 같이 보내짐을 확인할 수 있다. 이는 우리가 입력창에 넣은 `magic_answer`과 비교되어   
 
 ![[Pasted image 20260129163716.png]]
 *▲`/attack2` payload 식별*
