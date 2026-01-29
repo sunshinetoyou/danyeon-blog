@@ -69,6 +69,10 @@ devTools로 패킷을 분석해보면, Request Method가 `POST` 인 것을 확�
 ![[Pasted image 20260129163716.png]]
 *▲`/attack2` payload 식별*
 
+Burp Suite 였다면 해당 패킷을 인터셉트하여
+
+###
+
 ![[Pasted image 20260129105237.png]]
 *▲ magic number 생성로직&값 확인*
 
