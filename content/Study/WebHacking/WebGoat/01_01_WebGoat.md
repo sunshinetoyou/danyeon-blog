@@ -5,7 +5,7 @@ tags:
   - WebHacking
   - AutoEver
 draft: "true"
-date: 2026-01-28
+date: 2026-01-29
 ---
 ## OWASP Top 10
 
@@ -15,20 +15,10 @@ WebGoat는 OWASP Top 10 취약점을 실습할 수 있는 환경을 의도적으
 
 OWASP Top 10에 대한 정리는 [[OWASP TOP 10]]에 적어둘 예정.
 
-%% ## 배경 지식(간단)
-
-### Proxy
-
-### Loopback Proxy
-
-### Burp Suite %%
-
-
 ## WebGoat - HTTP Basics
 
-%% 잡설이 길었다. 바로 실습으로 들어가자. %%
 WebGoat 사이드 바에서 `General`>`HTTP Basics`를 실습한다.
-### **Try it!**
+### 1. **Try it!**
 
 #### Recon
 ![[Pasted image 20260129102554.png]]
@@ -47,7 +37,7 @@ WebGoat 사이드 바에서 `General`>`HTTP Basics`를 실습한다.
 *▲/src/main/java/org/owasp/webgoat/lessons/httpbasics/HttpBasicsLesson.java*
 
 ---
-### Quiz
+### 2. Quiz
 
 #### Recon
 ![[Pasted image 20260129112439.png]]
@@ -56,7 +46,7 @@ WebGoat 사이드 바에서 `General`>`HTTP Basics`를 실습한다.
 - 요청(req)의 type은 POST인가 GET인가?
 - `magic number`의 값은?
 
-<small>⚠️해당 로직은 위에서 확인한 /attack1 요청을 사용하지 않습니다.</small>
+<small>⚠️해당 로직은 위에서 확인한 /attack1 요청을 재사용하지 않습니다.</small>
 #### Analysis
 devTools로 패킷을 분석해보면, Request Method가 `POST` 인 것을 확인할 수 있다.
 
@@ -73,17 +63,15 @@ Burp Suite 였다면 해당 패킷을 인터셉트하여 중간에 컨닝해서 
 DevTools에서 인터셉트를 못해서, 입력 창에서 정답을 입력 후 재전송하여 해결했다.
 ### 추가 분석
 
-여러 번 요청을 보내도 `magic_num`이 변경되지 않는다는 것이 신기해서 내부 코드를 한 번 살펴봤다.
+요청을 여러 번 보내도 `magic_num`이 변경되지 않는다는 것이 신기해서 내부 코드를 한 번 살펴봤다.
 `magic_num`의 값은 hidden 속성으로 숨겨져 있었으며, 내부에 값을 결정짓는 스크립트가 있었다.
 
 ![[Pasted image 20260129105237.png]]
 *▲ magic number 생성로직&값 확인*
 
 
-##### 전체 흐름도
-
-1. 페이지 로드 시 `magic_num` 생성 스크립트가 작동해서 1~100 사이의 값을 부여한다.
-2. 입력값(answer, magic_answer)을 넣고 요청을 보내면, 
+##### `magic_num`의 생성/사용 조건 흐름
+![[Pasted image 20260129225106.png]]
 
 ## Reference
 - [MDN-HTTP Messages](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages)
