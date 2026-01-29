@@ -79,9 +79,11 @@ DevTools에서 인터셉트를 못해서, 입력 창에서 정답을 입력 후 
 ![[Pasted image 20260129105237.png]]
 *▲ magic number 생성로직&값 확인*
 
-페이지가 로드되면, 1부터 100까지의 랜덤한 수를 `magic_num`으로 결정짓고
-해당 값을 hidden 속성으로 숨겨둔다.
 
+##### 전체 흐름도
+
+1. 페이지 로드 시 `magic_num` 생성 스크립트가 작동해서 1~100 사이의 값을 부여한다.
+2. 
 
 ## Reference
 - [MDN-HTTP Messages](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages)
