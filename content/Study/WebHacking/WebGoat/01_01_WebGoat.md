@@ -61,7 +61,7 @@ WebGoat 사이드 바에서 `General`>`HTTP Basics`를 실습한다.
 devTools로 패킷을 분석해보면, Request Method가 `POST` 인 것을 확인할 수 있다.
 
 ![[Pasted image 20260129113046.png]]
-*▲ `/attack2` 요청 식별*
+*▲ `/attack2` 헤더*
 
 또한, Payload에서 Requests 시에 같이 보내지는 데이터를 보면, 다음과 같이 `` 
 
