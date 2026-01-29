@@ -99,7 +99,7 @@ VM 내부에서는 올라온 서비스들에 접근이 가능했지만, 호스�
 	- Guest Port: 8080 (webgoat 서비스 포트)
 
 - WebWolf(Rule2)
-	**Rule1과 동일한 이유**
+	- **Rule1과 동일한 이유**
  
 ![[Pasted image 20260128155308.png|650]]
 *▲그림 5. VirtualBox 포트포워딩 설정(2)*
@@ -117,5 +117,5 @@ VM 내부에서는 올라온 서비스들에 접근이 가능했지만, 호스�
 *▲그림 7. 브라우저 실행 결과(Host)*
 
 ## Reference
-https://github.com/WebGoat/WebGoat
-https://owasp.org/www-project-webgoat/
+- [WebGoat 깃허브 페이지](https://github.com/WebGoat/WebGoat)
+- [WebGoat 공식 소개 페이지](https://owasp.org/www-project-webgoat/)
