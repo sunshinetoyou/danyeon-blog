@@ -83,7 +83,7 @@ DevTools에서 인터셉트를 못해서, 입력 창에서 정답을 입력 후 
 ##### 전체 흐름도
 
 1. 페이지 로드 시 `magic_num` 생성 스크립트가 작동해서 1~100 사이의 값을 부여한다.
-2. 
+2. 입력값(answer, magic_answer)을 넣고 요청을 보내면, 
 
 ## Reference
 - [MDN-HTTP Messages](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages)
