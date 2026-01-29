@@ -71,8 +71,8 @@ devTools로 패킷을 분석해보면, Request Method가 `POST` 인 것을 확�
 
 Burp Suite 였다면 해당 패킷을 인터셉트하여 중간에 컨닝해서 바꿀 수 있었겠지만,,
 DevTools에서 인터셉트를 못해서, 입력 창에서 정답을 입력 후 재전송하여 해결했다.
+### 추가 분석
 
-###
 
 ![[Pasted image 20260129105237.png]]
 *▲ magic number 생성로직&값 확인*
