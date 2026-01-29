@@ -75,7 +75,7 @@ DevTools에서 인터셉트를 못해서, 입력 창에서 정답을 입력 후 
 
 `magic_num`이 변경되지 않는다는 것이 신기해서 내부 생성 코드를 한 번 살펴봤다.
 
-
+`magic_num`의 값은 hidden 속성으로 숨겨져 있었으며, 
 
 ![[Pasted image 20260129105237.png]]
 *▲ magic number 생성로직&값 확인*
