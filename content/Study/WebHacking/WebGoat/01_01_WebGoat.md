@@ -63,6 +63,7 @@ devTools로 패킷을 분석해보면, Request Method가 `POST` 인 것을 확�
 ![[Pasted image 20260129113046.png]]
 *▲ `/attack2` 요청 식별*
 
+또한, Payload에서 Requests 시에 같이 보내지는 데이터를 보면, 다음과 같이 `` 
 
 ![[Pasted image 20260129105237.png]]
 *▲ magic number 생성로직&값 확인*
