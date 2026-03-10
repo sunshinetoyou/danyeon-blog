@@ -1,3 +1,0 @@
----
-title: Danyeon Blog
----
