@@ -10,3 +10,5 @@ private/
 .replit
 replit.nix
 auto_push.sh
+
+content/Study/Security/CTF/picoCTF_2026/*
