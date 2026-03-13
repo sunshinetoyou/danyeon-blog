@@ -30,4 +30,4 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 
 ![[Pasted image 20260313172726.png]]
 
-이 부분에 대해서, 빨간 점끼리 통신을 해야 되는데, 
+이 부분에 대해서, 빨간 점끼리 통신을 해야 되는데, VPC 간에 (10.x.x.x의 내부 IP)를
