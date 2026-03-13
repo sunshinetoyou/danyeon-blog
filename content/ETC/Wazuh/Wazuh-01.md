@@ -12,7 +12,7 @@ AWS market에서 Wazuh AIN AMI를 배포하고 있다.
 # Wazuh DashBoard
 
 ```bash
-ssh -i [key.pem] -L 4443:[wazuh\'s IP]:443 [user]@[agent\'s IP]
+ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 ```
 
 
