@@ -20,3 +20,8 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 
 # Agent 연결
 
+### Trouble Shooting
+
+서로 다른 VPC 간에 Private IP 를 통한 통신이 불가능했다.
+
+이
