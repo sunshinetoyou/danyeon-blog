@@ -27,3 +27,7 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 이를 해결하고자 VPC Peering를 통해 서로 접근이 가능하게 만들었다.
 
 #### 문제 정의
+
+![[Pasted image 20260313172726.png]]
+
+이 부분에 대해서, 빨간 점끼리 통신을 해야 되는데, 
