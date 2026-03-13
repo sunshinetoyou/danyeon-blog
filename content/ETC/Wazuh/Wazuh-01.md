@@ -36,3 +36,6 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 
 이를 위해 총 3단계의 작업이 필요하다.
 
+# Reference
+- AWS VPC Peering: https://docs.aws.amazon.com/ko_kr/vpc/latest/peering/what-is-vpc-peering.html
+
