@@ -40,6 +40,10 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 ![[Pasted image 20260313173921.png]]
 *▲ VPC > 피어링 연결 > 피어링 연결 생성*
 
+![[Pasted image 20260313174010.png]]
+*▲ 요청자/수락자 설정*
+
+이때, 요청자->수락자의 단방향 통신만 허락되기 때문에 요청자를 
 
 ```sh
 # [agent IP] 에서 수행
