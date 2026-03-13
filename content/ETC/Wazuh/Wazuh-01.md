@@ -1,6 +1,6 @@
 ---
 title: "[wazuh] AWS 설치부터 agent 연결까지"
-draft: "true"
+draft: "false"
 ---
 # 학습 배경
 (생략)
@@ -35,7 +35,7 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 본래 VPC 간의 통신은 인터넷을 통해 이뤄지지만, VPC Peering을 통해 서로 비밀스러운 통신이 가능하다.
 
 
-이를 위해 총 2단계의 작업이 필요하다.
+이를 위해 총 3단계의 작업이 필요하다.
 
 #### 피어링 연결(pcx-\*) 생성하기
 ![[Pasted image 20260313173921.png]]
@@ -50,7 +50,10 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 ![[Pasted image 20260313174310.png]]
 *▲ 라우팅 테이블 편집*
 
-Agent IP와 Wazuh IP
+Agent IP와 Wazuh IP를 각각 교차하게 기입해준다.
+(예, Wazuh의 Route Table에 Agent IP를 기입)
+
+### 키 재발급&서비스 재시작
 
 ```sh
 # [agent IP] 에서 수행
