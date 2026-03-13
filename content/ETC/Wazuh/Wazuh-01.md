@@ -47,7 +47,10 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 이때, 요청자->수락자의 단방향 통신만 허락되기 때문에 요청자를 agent가 존재하는 VPC로 설정하고, 수락자를 Wazuh 인스턴스가 동작하고 있는 VPC로 설정해줘야 한다.
 
 #### 라우팅 테이블에 적용
+![[Pasted image 20260313174310.png]]
+*▲ 라우팅 테이블 편집*
 
+Agent IP와 Wazuh IP
 
 ```sh
 # [agent IP] 에서 수행
