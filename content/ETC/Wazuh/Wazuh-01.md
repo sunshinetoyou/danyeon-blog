@@ -24,4 +24,6 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 
 서로 다른 VPC 간에 Private IP 를 통한 통신이 불가능했다.
 
-이
+이를 해결하고자 VPC Peering를 통해 서로 접근이 가능하게 만들었다.
+
+#### 문제 정의
