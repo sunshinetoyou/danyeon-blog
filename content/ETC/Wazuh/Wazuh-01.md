@@ -35,7 +35,10 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 본래 VPC 간의 통신은 인터넷을 통해 이뤄지지만, VPC Peering을 통해 서로 비밀스러운 통신이 가능하다.
 
 이를 위해 총 3단계의 작업이 필요하다.
+```
+sudo /var/ossec/bin/agent-auth -m 10.1.101.167
 
+```
 # Reference
 - AWS VPC Peering: https://docs.aws.amazon.com/ko_kr/vpc/latest/peering/what-is-vpc-peering.html
 
