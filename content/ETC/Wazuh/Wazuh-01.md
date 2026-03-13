@@ -15,5 +15,8 @@ AWS market에서 Wazuh AIN AMI를 배포하고 있다.
 ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 ```
 
+![[Pasted image 20260313171813.png]]
+*▲ localhost:4443 접속하면 나오는 메인 페이지*
 
 # Agent 연결
+
