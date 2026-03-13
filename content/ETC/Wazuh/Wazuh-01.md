@@ -36,6 +36,11 @@ ssh -i [key.pem] -L 4443:[wazuh IP]:443 [user]@[agent IP]
 
 
 이를 위해 총 2단계의 작업이 필요하다.
+
+![[Pasted image 20260313173921.png]]
+*▲ VPC > 피어링 연결 > 피어링 연결 생성*
+
+
 ```sh
 # [agent IP] 에서 수행
 # KEY 수동 발급 받기
