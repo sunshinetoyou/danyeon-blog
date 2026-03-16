@@ -15,6 +15,10 @@ sudo docker ps -aq --no-trunc
 
 ## 데이터 수집 형식/위치 추가
 
-```sh
-
+```xml
+<localfile>
+  <log_format>json</log_format>
+  <location>/var/lib/docker/containers/*/*-json.log</location>
+</localfile>
 ```
+
