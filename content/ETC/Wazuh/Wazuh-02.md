@@ -23,3 +23,5 @@ sudo docker ps -aq --no-trunc
 ```
 
 계정명: root / wazuh-user
+
+
