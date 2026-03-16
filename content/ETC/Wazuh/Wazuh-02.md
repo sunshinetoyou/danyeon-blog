@@ -22,3 +22,4 @@ sudo docker ps -aq --no-trunc
 </localfile>
 ```
 
+계정명: root / wazuh-user
