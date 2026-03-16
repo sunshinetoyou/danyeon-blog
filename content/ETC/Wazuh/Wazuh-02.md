@@ -12,3 +12,9 @@ sudo docker ps -aq --no-trunc
 /var/lib/docker/containers/aa1c2de88fb7de95765b59ebf7c952fb85bbedfc4f5c7b4bd28490883ed6f8ab/aa1c2de88fb7de95765b59ebf7c952fb85bbedfc4f5c7b4bd28490883ed6f8ab-json.log
 ```
 
+
+## 데이터 수집 형식/위치 추가
+
+```sh
+
+```
