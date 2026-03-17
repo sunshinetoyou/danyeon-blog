@@ -22,3 +22,7 @@ sudo systemctl start wazuh-agent
 계정명: root / wazuh-user
 
 
+## Agent 관리
+
+### 방법 1
+
