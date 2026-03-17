@@ -30,3 +30,6 @@ sudo nano /var/ossec/etc/shared/default/agent.conf
 ```
 
 ### 방법 2. 중앙(manager) 집중 제어
+```bash
+sudo nano /var/ossec/etc/shared/default/agent.conf
+```
