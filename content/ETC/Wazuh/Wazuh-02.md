@@ -15,8 +15,6 @@ curl -o wazuh-agent-4.14.3-1.x86_64.rpm https://packages.wazuh.com/4.x/yum/wazuh
 sudo systemctl daemon-reload 
 sudo systemctl enable wazuh-agent 
 sudo systemctl start wazuh-agent
-
-
 ```
 
 
