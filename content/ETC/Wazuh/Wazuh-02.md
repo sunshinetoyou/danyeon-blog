@@ -26,10 +26,12 @@ sudo systemctl start wazuh-agent
 
 ### 방법 1. Agent 마다 직접 주입
 ```bash
-sudo nano /var/ossec/etc/shared/default/agent.conf
+PASS
 ```
 
 ### 방법 2. 중앙(manager) 집중 제어
 ```bash
 sudo nano /var/ossec/etc/shared/default/agent.conf
+
+sudo nano /var/ossec/etc/rules/local_rules.xml
 ```
