@@ -9,7 +9,7 @@ title: "[wazuh] Wazuh Agent 내부 컨테이너 로그 수집"
 curl -o wazuh-agent-4.14.3-1.x86_64.rpm https://packages.wazuh.com/4.x/yum/wazuh-agent-4.14.3-1.x86_64.rpm && sudo WAZUH_MANAGER=[wazuh IP] WAZUH_AGENT_NAME=[Agent-name] rpm -ihv wazuh-agent-4.14.3-1.x86_64.rpm
 
 # curl 명령 (DEB)
-curl -o wazuh-agent-4.14.3-1.x86_64.rpm https://packages.wazuh.com/4.x/yum/wazuh-agent-4.14.3-1.x86_64.rpm && sudo WAZUH_MANAGER=[wazuh IP] WAZUH_AGENT_NAME='vul-agent' rpm -ihv wazuh-agent-4.14.3-1.x86_64.rpm
+wget https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.14.3-1_amd64.deb && sudo WAZUH_MANAGER='10.1.101.167' WAZUH_AGENT_NAME='Agent-name' dpkg -i ./wazuh-agent_4.14.3-1_amd64.deb
 
 # 서비스 재시작
 sudo systemctl daemon-reload 
