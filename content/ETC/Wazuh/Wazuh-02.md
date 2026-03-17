@@ -24,5 +24,9 @@ sudo systemctl start wazuh-agent
 
 ## Agent 관리
 
-### 방법 1
+### 방법 1. Agent 마다 직접 주입
+```bash
+sudo nano /var/ossec/etc/shared/default/agent.conf
+```
 
+### 방법 2. 중앙(manager) 집중 제어
